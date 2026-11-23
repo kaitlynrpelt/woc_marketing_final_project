@@ -16,7 +16,7 @@ marketing data in order to calculate its actual customer acquisition cost.”
 ## Repository Contents
 | Folder | Lab | Artifact | Description |
 |---|---|---|---|
-| 01_lab2_tableau_channel_dashboard | Lab 2 | Tableau dashboard - Conversions by Channel | Visualizes real digital marketing data by channel and campaign so the WOC can see what it spends and how many customers each channel brings in, the core inputs for calculating its actual customer acquisition cost. |
+| [01_lab2_tableau_channel_dashboard](01_lab2_tableau_channel_dashboard) | Lab 2 | Tableau dashboard - Conversions by Channel | Visualizes real digital marketing data by channel and campaign so the WOC can see what it spends and how many customers each channel brings in, the core inputs for calculating its actual customer acquisition cost. |
 | Lab-3-thunkable | Lab 3 | Mobile App using Thunkable | Lets the WOC marketing team pick a channel and instantly see its spend, clicks, conversions, revenue, and customer acquisition cost on a Channel Summary screen, replacing spreadsheet digging and showing where marketing dollars go. |
 | Lab-7-chatgpt-webpage | Lab 7 | Webpage built with ChatGPT | Shows how the WOC can quickly build its own customer-facing web presence and landing pages, which are the entry points where campaign traffic and conversions can be tracked. |
 | Lab-8-ai-social-media-assistant | Lab 8 | AI social media assistant | A custom AI drafting tool built for the Utah Jazz that uses audience data to set campaign goals and produce platform-ready posts with human approval, showing how the WOC could run low-cost, trackable social campaigns that feed engagement and conversion data into its customer acquisition cost calculation. |
