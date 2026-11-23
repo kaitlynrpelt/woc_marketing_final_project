@@ -1,16 +1,16 @@
 # WOC Marketing Final Project
 
 **Track G:** Marketing
-**Team:** [Lily McPherson, Kaitlyn Pelt, Chloe Gay]
+**Team:** Lily McPherson, Kaitlyn Pelt, Chloe Gay
 
 ## WOC Problem Statement
-[Our track covers digital marketing analytics,
+Our track covers digital marketing analytics,
 campaign tracking, CRM integration, and customer acquisition. The specific
 problem we will focus on is how can the WOC use real digital marketing data to
 find its true cost of acquiring customers? We chose this track over the others
 because we are interested in learning more about the world of marketing and data
 analytics. Our preliminary recommendation is, “the WOC should interpret
-marketing data in order to calculate its actual customer acquisition cost.”]
+marketing data in order to calculate its actual customer acquisition cost.”
 
 ## Repository Contents
 | Folder | Lab | Artifact | Description |
@@ -23,4 +23,4 @@ marketing data in order to calculate its actual customer acquisition cost.”]
 
 ## How the Artifacts Build Toward the Final Recommendation
 
-[Together, these five labs trace the path from tools to a rollout plan for calculating the WOC's true customer acquisition cost. Lab 2 set up the GitHub repository that keeps our work organized and documented. Lab 3's Tableau dashboard turns real marketing data into clear views of spend and customers by channel, which is the foundation for the cost calculation. Labs 7 and 8 show how the WOC can create and manage its own customer touchpoints, a ChatGPT-built webpage and an AI social media assistant, using low-cost tools that also generate trackable campaign data. Lab 10 then decides what the WOC should handle in-house versus outsource, which shapes who owns the analytics and how much it costs to run. The rollout plan follows that order: connect and track the data, visualize it in Tableau, use AI-assisted channels to generate and monitor campaign activity, and assign ownership based on the Lab 10 decision, so the WOC can interpret its marketing data and know what it actually costs to acquire a customer.]
+Together, these five labs trace the path from tools to a rollout plan for calculating the WOC's true customer acquisition cost. Lab 2 set up the GitHub repository that keeps our work organized and documented. Lab 3's Tableau dashboard turns real marketing data into clear views of spend and customers by channel, which is the foundation for the cost calculation. Labs 7 and 8 show how the WOC can create and manage its own customer touchpoints, a ChatGPT-built webpage and an AI social media assistant, using low-cost tools that also generate trackable campaign data. Lab 10 then decides what the WOC should handle in-house versus outsource, which shapes who owns the analytics and how much it costs to run. The rollout plan follows that order: connect and track the data, visualize it in Tableau, use AI-assisted channels to generate and monitor campaign activity, and assign ownership based on the Lab 10 decision, so the WOC can interpret its marketing data and know what it actually costs to acquire a customer.
