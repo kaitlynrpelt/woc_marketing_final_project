@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareConnect | Patient Appointment Scheduling</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root { --ink:#203044; --nav:#263e67; --accent:#255b87; }
+    html { scroll-behavior:smooth; scroll-padding-top:78px; }
+    body { font-family:system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:#fff; }
+    .navbar,footer { background:var(--nav); }
+    .navbar .nav-link,.navbar-brand,footer,footer a { color:white!important; }
+    .navbar .nav-link:hover,footer a:hover { text-decoration:underline; }
+    section { padding:66px 0; }
+    .hero { background:#dceefc; padding:90px 0; }
+    #guide { background:#fff0d7; }
+    #providers { background:#e4f5e9; }
+    #appointments { background:#e8e6fb; }
+    #manage { background:#ffe6e6; }
+    #checklist { background:#dff4f3; }
+    #about { background:#fff4dc; }
+    #updates { background:#e9f0fc; }
+    .section-title { font-weight:750; margin-bottom:20px; color:#243a5d; }
+    .panel { background:#fff; border:1px solid rgba(30,50,80,.13); border-radius:16px; padding:24px; box-shadow:0 3px 12px rgba(20,30,50,.06); height:100%; }
+    .btn-primary { background:#255b87; border-color:#255b87; }
+    .btn-primary:hover { background:#194766; border-color:#194766; }
+    .btn:focus-visible,.form-control:focus-visible,.form-select:focus-visible { outline:3px solid #e5a934; outline-offset:2px; }
+    .calendar { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; }
+    .day-label { text-align:center; font-size:.82rem; font-weight:700; padding:6px 0; }
+    .day { border:1px solid #bdcce0; border-radius:8px; min-height:45px; background:#fff; color:#203044; }
+    .day:disabled { background:#eef0f4; color:#7a818a; cursor:not-allowed; }
+    .day.selected,.slot.selected { background:#255b87; color:#fff; border-color:#255b87; }
+    .day:not(:disabled):hover { background:#cfe9f7; color:#162b43; }
+    .day.selected:hover { background:#255b87; color:#fff; }
+    .slot { margin:4px; }
+    .muted-note { font-size:.88rem; color:#536070; }
+    .step-badge { display:inline-block; padding:5px 12px; background:#f1f4fa; border-radius:999px; font-size:.85rem; font-weight:650; }
+    .check-row { padding:10px 4px; border-bottom:1px solid #e8edf1; }
+    .check-row:last-child { border-bottom:0; }
+    .check-row label { cursor:pointer; }
+    .summary-line { display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid #e7e9ee; padding:9px 0; }
+    .summary-line strong { text-align:right; }
+    footer { padding:38px 0; }
+    @media(max-width:576px) { section{padding:46px 0;} .hero{padding:64px 0;} .panel{padding:17px;} .day{min-height:38px;font-size:.85rem;} .calendar{gap:3px;} }
+  </style>
+</head>
+<body>
+  <!-- DRAFT 2 CORE: Responsive navigation, plus links to Draft 3 features -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#home">CareConnect</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#guide">Appointment Guide</a></li>
+          <li class="nav-item"><a class="nav-link" href="#providers">Providers</a></li>
+          <li class="nav-item"><a class="nav-link" href="#appointments">Book</a></li>
+          <li class="nav-item"><a class="nav-link" href="#manage">Manage</a></li>
+          <li class="nav-item"><a class="nav-link" href="#checklist">Checklist</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- DRAFT 2 CORE: Hero -->
+  <section id="home" class="hero text-center">
+    <div class="container">
+      <span class="step-badge mb-3">Welcome to CareConnect</span>
+      <h1 class="display-5 fw-bold">Healthcare scheduling made simpler</h1>
+      <p class="lead mx-auto" style="max-width:750px">Find the right provider, understand what appointment to make, view available times, and manage your visit in one place.</p>
+      <a class="btn btn-primary btn-lg m-1" href="#guide">Help Me Choose</a>
+      <a class="btn btn-outline-dark btn-lg m-1" href="#appointments">Schedule an Appointment</a>
+    </div>
+  </section>
+
+  <!-- NEW FEATURE 3: Interactive appointment-type decision aid -->
+  <section id="guide">
+    <div class="container">
+      <h2 class="section-title text-center">Help Me Choose an Appointment Type</h2>
+      <p class="text-center mb-4">Not sure what to book? Answer one simple question to get a starting recommendation.</p>
+      <div class="panel mx-auto" style="max-width:800px">
+        <label class="form-label fw-semibold" for="careReason">What do you need help with?</label>
+        <select id="careReason" class="form-select mb-3">
+          <option value="">Select your reason for visiting</option>
+          <option value="routine">A routine checkup or general health question</option>
+          <option value="skin">A skin concern, acne, or rash</option>
+          <option value="injury">Recovery from an injury or movement problem</option>
+          <option value="heart">A non-urgent heart-health follow-up</option>
+          <option value="followup">A follow-up with a provider I already saw</option>
+        </select>
+        <button id="recommendBtn" type="button" class="btn btn-primary">Get Recommendation</button>
+        <div id="recommendation" class="alert alert-info mt-3 d-none" role="status"></div>
+        <p class="muted-note mt-3 mb-0">This guide is educational and cannot diagnose symptoms. For emergencies, call 911. For urgent or worsening symptoms, contact a healthcare professional promptly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFT 2 CORE: Filterable provider directory, integrated with calendar -->
+  <section id="providers">
+    <div class="container">
+      <h2 class="section-title text-center">Find the Right Provider for You</h2>
+      <p class="text-center mb-4">Browse example providers and filter by the type of care you need.</p>
+      <div class="row justify-content-center mb-4"><div class="col-md-6">
+        <label class="form-label fw-semibold" for="careFilter">Filter by specialty</label>
+        <select id="careFilter" class="form-select">
+          <option value="all">All Providers</option>
+          <option value="Primary Care">Primary Care</option>
+          <option value="Dermatology">Dermatology</option>
+          <option value="Physical Therapy">Physical Therapy</option>
+          <option value="Cardiology">Cardiology</option>
+        </select>
+      </div></div>
+      <div id="providerResults" class="row g-3"></div>
+    </div>
+  </section>
+
+  <!-- DRAFT 2 CORE: Provider-specific interactive calendar and request form -->
+  <section id="appointments">
+    <div class="container">
+      <h2 class="section-title text-center">Schedule an Appointment</h2>
+      <p class="text-center mb-4">Choose your provider, then a sample available date and time. The form below is a demonstration only.</p>
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="panel">
+            <label class="form-label fw-semibold" for="providerSelect">Step 1: Choose your provider</label>
+            <select id="providerSelect" class="form-select mb-4"></select>
+            <h5>Step 2: Choose an available date</h5>
+            <div class="d-flex align-items-center justify-content-between my-3">
+              <button id="prevMonth" type="button" class="btn btn-outline-secondary" aria-label="Previous month">&lt;</button>
+              <strong id="monthTitle" aria-live="polite"></strong>
+              <button id="nextMonth" type="button" class="btn btn-outline-secondary" aria-label="Next month">&gt;</button>
+            </div>
+            <div class="calendar mb-2" aria-hidden="true">
+              <div class="day-label">Sun</div><div class="day-label">Mon</div><div class="day-label">Tue</div><div class="day-label">Wed</div><div class="day-label">Thu</div><div class="day-label">Fri</div><div class="day-label">Sat</div>
+            </div>
+            <div id="calendar" class="calendar"></div>
+            <p class="muted-note mt-3">Available weekdays are selectable. Gray dates are unavailable. Availability is simulated, not live.</p>
+            <hr>
+            <h5>Step 3: Choose an available time</h5>
+            <p id="dateLabel" class="muted-note">Select a date to see appointment times.</p>
+            <div id="timeSlots" aria-label="Available appointment times"></div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="panel">
+            <h4 class="section-title">Appointment Details</h4>
+            <form id="bookingForm">
+              <div class="mb-3"><label class="form-label" for="patientName">Full Name</label><input class="form-control" id="patientName" type="text" maxlength="80" required></div>
+              <div class="mb-3"><label class="form-label" for="email">Email Address</label><input class="form-control" id="email" type="email" required></div>
+              <div class="mb-3"><label class="form-label" for="appointmentType">Appointment Type</label>
+                <select class="form-select" id="appointmentType" required>
+                  <option value="">Select an appointment type</option>
+                  <option>Annual Checkup</option><option>General Consultation</option><option>Follow-Up Visit</option><option>Preventive Care</option><option>Skin Consultation</option><option>Physical Therapy Evaluation</option><option>Cardiology Consultation</option>
+                </select>
+              </div>
+              <div class="mb-3"><label class="form-label" for="chosenProvider">Selected Provider</label><input class="form-control" id="chosenProvider" readonly></div>
+              <div class="mb-3"><label class="form-label" for="chosenDate">Selected Date</label><input class="form-control" id="chosenDate" readonly></div>
+              <div class="mb-3"><label class="form-label" for="chosenTime">Selected Time</label><input class="form-control" id="chosenTime" readonly></div>
+              <button class="btn btn-primary w-100" type="submit">Submit Demo Appointment</button>
+              <p class="muted-note mt-3 mb-0">Do not enter real patient information. Demo bookings exist only while this page is open; nothing is sent to a healthcare office.</p>
+            </form>
+            <div id="bookingMessage" class="alert mt-3 d-none" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW FEATURE 1: Manage appointments - reschedule and cancel demo booking -->
+  <section id="manage">
+    <div class="container">
+      <h2 class="section-title text-center">Reschedule or Cancel an Appointment</h2>
+      <p class="text-center mb-4">Manage the appointment you created on this page without starting over.</p>
+      <div class="panel mx-auto" style="max-width:850px">
+        <div id="noBooking" class="alert alert-light border mb-0">No demo appointment yet. <a href="#appointments">Book an appointment</a> to try this feature.</div>
+        <div id="bookingManager" class="d-none">
+          <div id="bookingSummary" aria-live="polite"></div>
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <button id="rescheduleBtn" class="btn btn-primary" type="button">Reschedule Appointment</button>
+            <button id="cancelBtn" class="btn btn-outline-danger" type="button">Cancel Appointment</button>
+          </div>
+          <div id="reschedulePanel" class="border rounded p-3 mt-3 d-none">
+            <h5>Choose a new date and time</h5>
+            <p class="muted-note">Your existing provider stays the same. The original time remains reserved until you confirm the change.</p>
+            <label for="rescheduleDate" class="form-label">New date</label>
+            <input id="rescheduleDate" type="date" class="form-control mb-3">
+            <label for="rescheduleTime" class="form-label">Available times</label>
+            <select id="rescheduleTime" class="form-select mb-3"><option value="">Choose a date first</option></select>
+            <button id="confirmReschedule" class="btn btn-primary" type="button">Confirm New Time</button>
+            <button id="closeReschedule" class="btn btn-outline-secondary" type="button">Keep Original Time</button>
+          </div>
+        </div>
+        <div id="manageMessage" class="alert alert-info mt-3 d-none" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW FEATURE 2: Interactive preparation checklist and progress bar -->
+  <section id="checklist">
+    <div class="container">
+      <h2 class="section-title text-center">Pre-Appointment Checklist</h2>
+      <p class="text-center mb-4">Keep track of what you need before your visit.</p>
+      <div class="panel mx-auto" style="max-width:800px">
+        <div id="checklistAppointment" class="muted-note mb-3">Book a demo appointment to see its details here.</div>
+        <div id="checklistItems">
+          <div class="check-row"><input class="form-check-input me-2 prep-check" type="checkbox" id="prep1"><label for="prep1">Have a photo ID ready</label></div>
+          <div class="check-row"><input class="form-check-input me-2 prep-check" type="checkbox" id="prep2"><label for="prep2">Bring your insurance card, if applicable</label></div>
+          <div class="check-row"><input class="form-check-input me-2 prep-check" type="checkbox" id="prep3"><label for="prep3">Write down your questions for the provider</label></div>
+          <div class="check-row"><input class="form-check-input me-2 prep-check" type="checkbox" id="prep4"><label for="prep4">Prepare a current medication list</label></div>
+          <div class="check-row"><input class="form-check-input me-2 prep-check" type="checkbox" id="prep5"><label for="prep5">Check your appointment date, time, and location with the office</label></div>
+        </div>
+        <div class="d-flex justify-content-between mt-3 mb-2"><strong>Preparation progress</strong><span id="progressText">0 of 5 complete</span></div>
+        <div class="progress" role="progressbar" aria-label="Checklist completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressWrapper" style="height:18px"><div class="progress-bar bg-success" id="progressBar" style="width:0%"></div></div>
+        <button id="resetChecklist" class="btn btn-outline-secondary mt-3" type="button">Reset Checklist</button>
+        <p class="muted-note mt-3 mb-0">General preparation suggestions only. Your provider may give different instructions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFT 2 CORE: About the Process and scheduling challenges -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title text-center">About the Process</h2>
+      <div class="row g-3">
+        <div class="col-md-6"><div class="panel"><h4>Who Uses This Process?</h4><p>Patients use online scheduling to request routine checkups, follow-up visits, general consultations, and other healthcare appointments.</p></div></div>
+        <div class="col-md-6"><div class="panel"><h4>Why Is It Important?</h4><p>Scheduling helps patients access care and helps healthcare offices organize visits and communicate appointment details.</p></div></div>
+      </div>
+      <div class="panel mt-3">
+        <h4>Current Scheduling Challenges</h4>
+        <p>Patients may not know which provider or appointment type to choose. Traditional websites can make it difficult to see available times, and patients may need to call the office to change a visit.</p>
+        <h4>How We Improved the Process</h4>
+        <p class="mb-0">The provider directory and calendar from Draft 2 are now connected to an appointment-type guide, demo rescheduling and cancellation, and a preparation checklist. Color-coded sections help patients quickly recognize each step of the process.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFT 2 CORE: Current Information -->
+  <section id="updates">
+    <div class="container">
+      <h2 class="section-title text-center">Current Information</h2>
+      <div class="row g-3">
+        <div class="col-md-4"><div class="panel"><h5>Office Hours</h5><p>Monday–Friday<br>8:00 AM–5:00 PM</p><p class="muted-note mb-0">Example office hours.</p></div></div>
+        <div class="col-md-4"><div class="panel"><h5>Appointment Availability</h5><p>Browse sample provider-specific appointment times on the interactive calendar. Actual availability must be confirmed with the office.</p></div></div>
+        <div class="col-md-4"><div class="panel"><h5>Scheduling Assistance</h5><p>Use the appointment guide, browse provider specialties, or contact the healthcare office if you need help.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRAFT 2 CORE: Contact footer -->
+  <footer id="contact" class="text-center">
+    <div class="container">
+      <h4>Contact CareConnect</h4>
+      <p>Questions about scheduling an appointment?</p>
+      <p>Phone: (555) 010-2020<br>Email: info@example.com</p>
+      <p><a href="#home">Home</a> · <a href="#about">About</a> · <a href="#providers">Providers</a> · <a href="mailto:info@example.com">Email Us</a></p>
+      <p class="mb-0 small">© 2026 CareConnect · Educational demonstration website</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    "use strict";
+
+    // Demo-only provider data; no real patient information or server is used.
+    const providers = [
+      {id:1,name:"Dr. Sarah Johnson",specialty:"Primary Care",description:"Annual checkups, preventive care, and general health consultations."},
+      {id:2,name:"Dr. Michael Lee",specialty:"Dermatology",description:"Skin conditions, acne, rashes, and skin health."},
+      {id:3,name:"Dr. Emily Carter",specialty:"Physical Therapy",description:"Injury recovery, mobility, and pain management."},
+      {id:4,name:"Dr. James Wilson",specialty:"Cardiology",description:"Heart health and non-urgent cardiovascular follow-up care."}
+    ];
+    const times = ["9:00 AM","10:00 AM","11:00 AM","1:00 PM","2:00 PM","3:00 PM"];
+    const $ = id => document.getElementById(id);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    let displayedMonth = new Date(today.getFullYear(),today.getMonth(),1);
+    let providerId = 1, selectedDate = "", selectedTime = "";
+    let booking = null; // In-memory demo appointment. Refreshing the page clears it.
+
+    function key(d) {
+      return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+    }
+    function fromKey(s) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+      const [y,m,d] = s.split("-").map(Number);
+      const parsed = new Date(y,m-1,d);
+      return key(parsed) === s ? parsed : null;
+    }
+    function prettyDate(s) {
+      const d=fromKey(s);
+      return d ? d.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}) : "";
+    }
+    function getProvider(id=providerId) { return providers.find(p=>p.id===id); }
+
+    // Simulated deterministic availability, varying by provider and day.
+    // A booked demo slot is removed from the displayed availability.
+    function availableTimes(dateString,id=providerId,ignoreBooking=false) {
+      const d=fromKey(dateString);
+      if (!d || d<today || d.getDay()===0 || d.getDay()===6) return [];
+      const serial=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/86400000);
+      return times.filter((time,i) =>
+        (serial+id*3+i)%4!==0 &&
+        (ignoreBooking || !booking || booking.providerId!==id || booking.date!==dateString || booking.time!==time)
+      );
+    }
+
+    // DRAFT 2 CORE: Filter providers and choose one to use in calendar.
+    function renderProviders() {
+      const filter=$("careFilter").value;
+      const container=$("providerResults");
+      container.replaceChildren();
+      providers.filter(p=>filter==="all" || p.specialty===filter).forEach(p=>{
+        const col=document.createElement("div"); col.className="col-md-6 col-lg-3";
+        const card=document.createElement("div"); card.className="panel";
+        const title=document.createElement("h5"); title.textContent=p.name;
+        const specialty=document.createElement("p"); specialty.className="fw-semibold"; specialty.textContent=p.specialty;
+        const desc=document.createElement("p"); desc.textContent=p.description;
+        const btn=document.createElement("button"); btn.type="button"; btn.className="btn btn-primary w-100"; btn.textContent="Select Provider";
+        btn.addEventListener("click",()=>{
+          $("providerSelect").value=String(p.id); changeProvider();
+          $("appointments").scrollIntoView({behavior:"smooth"});
+        });
+        card.append(title,specialty,desc,btn); col.append(card); container.append(col);
+      });
+    }
+    $("careFilter").addEventListener("change",renderProviders);
+
+    // NEW FEATURE 3: Recommend visit type and provider specialty.
+    const recommendations = {
+      routine:{type:"Annual Checkup",specialty:"Primary Care",note:"A primary care visit is a good starting point for routine care."},
+      skin:{type:"Skin Consultation",specialty:"Dermatology",note:"A dermatology consultation may fit a non-urgent skin concern."},
+      injury:{type:"Physical Therapy Evaluation",specialty:"Physical Therapy",note:"A physical therapy evaluation may fit a referral or an existing recovery plan."},
+      heart:{type:"Cardiology Consultation",specialty:"Cardiology",note:"For a non-urgent cardiology follow-up, confirm whether a referral is needed."},
+      followup:{type:"Follow-Up Visit",specialty:"Primary Care",note:"Whenever possible, follow up with the clinician who previously treated you."}
+    };
+    $("recommendBtn").addEventListener("click",()=>{
+      const choice=$("careReason").value;
+      const result=$("recommendation");
+      result.classList.remove("d-none");
+      if (!choice) { result.textContent="Please select a reason for visiting first."; return; }
+      const r=recommendations[choice];
+      result.textContent=`Suggested appointment: ${r.type}. Suggested specialty: ${r.specialty}. ${r.note} This is guidance, not a diagnosis.`;
+      $("appointmentType").value=r.type;
+      $("careFilter").value=r.specialty;
+      renderProviders();
+      const match=providers.find(p=>p.specialty===r.specialty);
+      if(match) { $("providerSelect").value=String(match.id); changeProvider(); }
+    });
+
+    // DRAFT 2 CORE: Calendar and time-slot selection.
+    function clearSelection() {
+      selectedDate=""; selectedTime="";
+      $("chosenDate").value=""; $("chosenTime").value="";
+      $("dateLabel").textContent="Select a date to see appointment times.";
+      $("timeSlots").replaceChildren();
+    }
+    function changeProvider() {
+      providerId=Number($("providerSelect").value);
+      $("chosenProvider").value=getProvider().name;
+      clearSelection(); renderCalendar();
+    }
+    $("providerSelect").addEventListener("change",changeProvider);
+    function renderCalendar() {
+      const grid=$("calendar"); grid.replaceChildren();
+      $("monthTitle").textContent=displayedMonth.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+      const first=new Date(displayedMonth.getFullYear(),displayedMonth.getMonth(),1);
+      const total=new Date(displayedMonth.getFullYear(),displayedMonth.getMonth()+1,0).getDate();
+      for(let i=0;i<first.getDay();i++) grid.append(document.createElement("div"));
+      for(let day=1;day<=total;day++) {
+        const d=new Date(displayedMonth.getFullYear(),displayedMonth.getMonth(),day);
+        const k=key(d);
+        const btn=document.createElement("button");
+        btn.type="button"; btn.className="day"; btn.textContent=String(day);
+        btn.setAttribute("aria-label",prettyDate(k));
+        btn.disabled=availableTimes(k).length===0;
+        if(k===selectedDate) { btn.classList.add("selected"); btn.setAttribute("aria-pressed","true"); }
+        btn.addEventListener("click",()=>selectDate(k));
+        grid.append(btn);
+      }
+      const currentStart=new Date(today.getFullYear(),today.getMonth(),1);
+      $("prevMonth").disabled=displayedMonth<=currentStart;
+    }
+    function selectDate(k) {
+      selectedDate=k; selectedTime="";
+      $("chosenDate").value=k; $("chosenTime").value="";
+      $("dateLabel").textContent="Available times for "+prettyDate(k);
+      const area=$("timeSlots"); area.replaceChildren();
+      availableTimes(k).forEach(time=>{
+        const btn=document.createElement("button"); btn.type="button";
+        btn.className="btn btn-outline-primary slot"; btn.textContent=time;
+        btn.addEventListener("click",()=>{
+          selectedTime=time; $("chosenTime").value=time;
+          area.querySelectorAll("button").forEach(b=>{ b.classList.toggle("selected",b===btn); b.setAttribute("aria-pressed",String(b===btn)); });
+        });
+        area.append(btn);
+      });
+      renderCalendar();
+    }
+    function moveMonth(delta) {
+      const next=new Date(displayedMonth.getFullYear(),displayedMonth.getMonth()+delta,1);
+      if(next<new Date(today.getFullYear(),today.getMonth(),1)) return;
+      displayedMonth=next; clearSelection(); renderCalendar();
+    }
+    $("prevMonth").addEventListener("click",()=>moveMonth(-1));
+    $("nextMonth").addEventListener("click",()=>moveMonth(1));
+
+    function showMessage(id,message,kind="info") {
+      const el=$(id); el.className=`alert alert-${kind} mt-3`; el.textContent=message;
+    }
+    // Client-side demo booking. Only one active appointment per page session.
+    $("bookingForm").addEventListener("submit",event=>{
+      event.preventDefault();
+      if(!$("bookingForm").reportValidity()) return;
+      if(!selectedDate || !selectedTime) {
+        showMessage("bookingMessage","Please choose a date and an available time.","warning"); return;
+      }
+      if(!availableTimes(selectedDate).includes(selectedTime)) {
+        showMessage("bookingMessage","That demo slot is no longer available. Please choose another.","warning");
+        clearSelection(); renderCalendar(); return;
+      }
+      booking={
+        providerId, date:selectedDate, time:selectedTime,
+        type:$("appointmentType").value
+      };
+      showMessage("bookingMessage","Demo appointment created! View it below in Manage Appointments. No real appointment has been booked.","success");
+      $("patientName").value=""; $("email").value="";
+      clearSelection(); renderCalendar();
+      updateManager(); resetChecklist();
+    });
+
+    // NEW FEATURE 1: View, reschedule, and cancel the active demo appointment.
+    function updateManager() {
+      $("noBooking").classList.toggle("d-none",!!booking);
+      $("bookingManager").classList.toggle("d-none",!booking);
+      $("reschedulePanel").classList.add("d-none");
+      $("bookingSummary").replaceChildren();
+      if(booking) {
+        [
+          ["Provider",getProvider(booking.providerId).name],
+          ["Appointment Type",booking.type],
+          ["Date",prettyDate(booking.date)],
+          ["Time",booking.time],
+          ["Status","Demo appointment scheduled"]
+        ].forEach(([label,value])=>{
+          const line=document.createElement("div"); line.className="summary-line";
+          const a=document.createElement("span"); a.textContent=label;
+          const b=document.createElement("strong"); b.textContent=value;
+          line.append(a,b); $("bookingSummary").append(line);
+        });
+        $("checklistAppointment").textContent=`Preparing for ${booking.type} with ${getProvider(booking.providerId).name} on ${prettyDate(booking.date)} at ${booking.time}.`;
+      } else {
+        $("checklistAppointment").textContent="Book a demo appointment to see its details here.";
+      }
+    }
+    $("rescheduleBtn").addEventListener("click",()=>{
+      if(!booking) return;
+      $("reschedulePanel").classList.remove("d-none");
+      $("rescheduleDate").min=key(today);
+      $("rescheduleDate").value=booking.date;
+      updateRescheduleTimes();
+    });
+    function updateRescheduleTimes() {
+      const select=$("rescheduleTime"); select.replaceChildren();
+      const placeholder=document.createElement("option"); placeholder.value=""; placeholder.textContent="Select a new time"; select.append(placeholder);
+      if(!booking) return;
+      const date=$("rescheduleDate").value;
+      // Keep the original slot available as a choice during rescheduling.
+      const options=availableTimes(date,booking.providerId,true);
+      options.forEach(time=>{
+        if(date===booking.date && time===booking.time) return;
+        if(booking && booking.providerId===providerId && booking.date===date && booking.time===time) return;
+        const opt=document.createElement("option"); opt.value=time; opt.textContent=time; select.append(opt);
+      });
+    }
+    $("rescheduleDate").addEventListener("change",updateRescheduleTimes);
+    $("closeReschedule").addEventListener("click",()=>$("reschedulePanel").classList.add("d-none"));
+    $("confirmReschedule").addEventListener("click",()=>{
+      if(!booking) return;
+      const newDate=$("rescheduleDate").value, newTime=$("rescheduleTime").value;
+      if(!newTime || !availableTimes(newDate,booking.providerId,true).includes(newTime) ||
+         (newDate===booking.date && newTime===booking.time)) {
+        showMessage("manageMessage","Choose a different available weekday and time.","warning"); return;
+      }
+      booking.date=newDate; booking.time=newTime;
+      updateManager(); resetChecklist(); renderCalendar();
+      showMessage("manageMessage","Demo appointment rescheduled. Your checklist has been reset for the new visit.","success");
+    });
+    $("cancelBtn").addEventListener("click",()=>{
+      if(!booking) return;
+      if(!window.confirm("Cancel this demo appointment?")) return;
+      booking=null; updateManager(); resetChecklist(); renderCalendar();
+      showMessage("manageMessage","Demo appointment canceled. Its sample time is available again.","success");
+    });
+
+    // NEW FEATURE 2: Interactive checklist and visible progress.
+    function updateProgress() {
+      const checks=[...document.querySelectorAll(".prep-check")];
+      const count=checks.filter(c=>c.checked).length;
+      const percent=Math.round(100*count/checks.length);
+      $("progressText").textContent=`${count} of ${checks.length} complete`;
+      $("progressBar").style.width=percent+"%";
+      $("progressWrapper").setAttribute("aria-valuenow",String(percent));
+    }
+    function resetChecklist() {
+      document.querySelectorAll(".prep-check").forEach(c=>c.checked=false);
+      updateProgress();
+    }
+    document.querySelectorAll(".prep-check").forEach(c=>c.addEventListener("change",updateProgress));
+    $("resetChecklist").addEventListener("click",resetChecklist);
+
+    // Initialize the Draft 2 features and the new Draft 3 enhancements.
+    providers.forEach(p=>{
+      const opt=document.createElement("option");
+      opt.value=String(p.id); opt.textContent=`${p.name} — ${p.specialty}`;
+      $("providerSelect").append(opt);
+    });
+    $("providerSelect").value="1";
+    renderProviders(); changeProvider(); updateManager(); updateProgress();
+  </script>
+</body>
+</html>
