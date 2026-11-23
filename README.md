@@ -1,6 +1,7 @@
 # WOC Marketing Final Project
 
 **Track G:** Marketing
+
 **Team:** Lily McPherson, Kaitlyn Pelt, Chloe Gay
 
 ## WOC Problem Statement
