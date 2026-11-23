@@ -16,11 +16,11 @@ marketing data in order to calculate its actual customer acquisition cost.”
 ## Repository Contents
 | Folder | Lab | Artifact | Description |
 |---|---|---|---|
-| lab-02-github-setup | Lab 2 | GitHub repository setup | Establishes the version-controlled home where every analysis and prototype is stored, so the team's work toward the customer acquisition cost recommendation is documented and traceable. |
-| lab-03-tableau-dashboard | Lab 3 | Tableau dashboard | Visualizes real digital marketing data by channel and campaign so the WOC can see what it spends and how many customers each channel brings in, the core inputs for calculating its actual customer acquisition cost. |
-| lab-07-chatgpt-webpage | Lab 7 | Webpage built with ChatGPT | Shows how the WOC can quickly build its own customer-facing web presence and landing pages, which are the entry points where campaign traffic and conversions can be tracked. |
-| lab-08-ai-social-media-assistant | Lab 8 | AI social media assistant | Demonstrates how AI can produce and manage social content at low cost, helping the WOC lower the spending side of its customer acquisition cost while generating trackable campaign data. |
-| lab-10-ai-strategy-outsourcing | Lab 10 | AI strategy and outsourcing decision | Weighs which marketing analytics and AI work the WOC should build in-house versus outsource, directly shaping the true cost of acquiring customers and how the recommendation gets implemented. |
+| Lab-2-tableau_channel_dashboard | Lab 2 | Tableau dashboard - Conversions by Channel | Visualizes real digital marketing data by channel and campaign so the WOC can see what it spends and how many customers each channel brings in, the core inputs for calculating its actual customer acquisition cost. |
+| Lab-3-thunkable | Lab 3 | Mobile App using Thunkable | Lets the WOC marketing team pick a channel and instantly see its spend, clicks, conversions, revenue, and customer acquisition cost on a Channel Summary screen, replacing spreadsheet digging and showing where marketing dollars go. |
+| Lab-7-chatgpt-webpage | Lab 7 | Webpage built with ChatGPT | Shows how the WOC can quickly build its own customer-facing web presence and landing pages, which are the entry points where campaign traffic and conversions can be tracked. |
+| Lab-8-ai-social-media-assistant | Lab 8 | AI social media assistant | Demonstrates how AI can produce and manage social content at low cost, helping the WOC lower the spending side of its customer acquisition cost while generating trackable campaign data. |
+| Lab-10-ai-strategy-outsourcing | Lab 10 | AI strategy and outsourcing decision | Weighs which marketing analytics and AI work the WOC should build in-house versus outsource, directly shaping the true cost of acquiring customers and how the recommendation gets implemented. |
 
 ## How the Artifacts Build Toward the Final Recommendation
 
